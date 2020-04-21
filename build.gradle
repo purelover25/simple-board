@@ -12,15 +12,40 @@ repositories {
 	mavenCentral()
 }
 
+configurations{
+	compileOnly{
+		extendsFrom annotationProcessor
+	}
+}
+jar {
+	baseName="${group}"
+	version="${version}"
+	manifest{
+		attributes 'Title': 'SimpleBoard',
+		'Version':1.0,
+		'Main-Class': 'com.donzbox.HomepageBatchApplication'
+	}
+	from{
+		configurations.compile.collect{
+			it.isDirectory() ? it:zipTree(it)
+		}
+	}
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
 	runtimeOnly 'mysql:mysql-connector-java'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
+	compile 'io.springfox:springfox-swagger2:2.6.1'
+	compile 'io.springfox:springfox-swagger-ui:2.6.1'
 }
 
 test {
 	useJUnitPlatform()
 }
+
